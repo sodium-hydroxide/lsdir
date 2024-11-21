@@ -1,0 +1,9 @@
+[project]
+name = "lsdir"
+version = "0.1.0"
+dependencies = [
+  "python-magic"
+]
+
+[project.scripts]
+lsdir = "lsdir.__main__:main"
