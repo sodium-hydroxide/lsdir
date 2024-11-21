@@ -9,8 +9,8 @@ to stdout.
 Installation can be done using `homebrew` with the following commands:
 
 ```bash
-brew tap sodium-hydroxide/compression-tools https://github.com/sodium-hydroxide/compression-tools
-brew install sodium-hydroxide/compression-tools/compression-tools 
+brew tap sodium-hydroxide/lsdir https://github.com/sodium-hydroxide/lsdir
+brew install sodium-hydroxide/lsdir/lsdir
 ```
 
 ## Usage
