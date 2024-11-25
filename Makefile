@@ -1,6 +1,5 @@
 VERSION := $(shell cat VERSION.txt)
-
-.PHONY: install uninstall release check-version build
+.PHONY: install uninstall release check-version build check-formula
 
 check-version:
 	@if [ -z "$(VERSION)" ]; then \
@@ -17,6 +16,16 @@ build:
 	pip install build
 	python -m build
 
+check-formula:
+	@echo "Verifying python-magic SHA256..."
+	@MAGIC_SHA256=$$(curl -L "https://files.pythonhosted.org/packages/da/db/0b3e28ac047452d079d375ec6798bf76a036a08182dbb39ed38116a49130/python-magic-0.4.27.tar.gz" | shasum -a 256 | awk '{print $$1}'); \
+	if ! grep -q "$$MAGIC_SHA256" Formula/lsdir.rb; then \
+		echo "Updating python-magic SHA256..."; \
+		sed -i '' "s/sha256 \".*\"/sha256 \"$$MAGIC_SHA256\"/" Formula/lsdir.rb; \
+		git add Formula/lsdir.rb; \
+		git commit -m "Update python-magic SHA256"; \
+	fi
+
 release: check-version
 	@if git diff-index --quiet HEAD --; then \
 		VERSION_TAG="v$(VERSION)"; \
@@ -28,14 +37,22 @@ release: check-version
 		git tag -a $$VERSION_TAG -m "Release $$VERSION_TAG"; \
 		git push origin main; \
 		git push origin $$VERSION_TAG; \
-		sleep 2; \
-		SHA256=$$(curl -L "https://github.com/sodium-hydroxide/lsdir/archive/refs/tags/$$VERSION_TAG.tar.gz" | shasum -a 256 | awk '{print $$1}'); \
-		sed -i '' "s/sha256 \".*\"/sha256 \"$$SHA256\"/" Formula/lsdir.rb; \
+		echo "Waiting for GitHub to process the new tag..."; \
+		sleep 5; \
+		PACKAGE_SHA256=$$(curl -L "https://github.com/sodium-hydroxide/lsdir/archive/refs/tags/$$VERSION_TAG.tar.gz" | shasum -a 256 | awk '{print $$1}'); \
+		echo "New package SHA256: $$PACKAGE_SHA256"; \
+		MAGIC_SHA256=$$(curl -L "https://files.pythonhosted.org/packages/da/db/0b3e28ac047452d079d375ec6798bf76a036a08182dbb39ed38116a49130/python-magic-0.4.27.tar.gz" | shasum -a 256 | awk '{print $$1}'); \
+		if [ "$$PACKAGE_SHA256" = "$$MAGIC_SHA256" ]; then \
+			echo "Error: Package SHA256 matches python-magic SHA256. This is likely an error."; \
+			exit 1; \
+		fi; \
+		sed -i '' "/url.*lsdir.*tar\.gz/,/sha256/ s/sha256 \".*\"/sha256 \"$$PACKAGE_SHA256\"/" Formula/lsdir.rb; \
 		git add Formula/lsdir.rb; \
-		git commit -m "Update SHA256 for $$VERSION_TAG"; \
+		git commit -m "Update package SHA256 for $$VERSION_TAG"; \
 		git push origin main; \
 		echo "Release $$VERSION_TAG complete!"; \
-		echo "SHA256: $$SHA256"; \
+		echo "Package SHA256: $$PACKAGE_SHA256"; \
+		echo "Python-magic SHA256: $$MAGIC_SHA256"; \
 	else \
 		echo "Error: Working directory not clean. Commit changes first."; \
 		exit 1; \
