@@ -1,3 +1,3 @@
-from .core import main
+from .lsdir import main
 if __name__=="__main__":
     main()
