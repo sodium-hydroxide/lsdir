@@ -3,7 +3,7 @@ class Lsdir < Formula
 
   desc "Enhanced directory listing tool with content preview"
   homepage "https://github.com/sodium-hydroxide/lsdir"
-  url "https://github.com/sodium-hydroxide/lsdir/archive/refs/tags/v0.1.5.tar.gz"
+  url "https://github.com/sodium-hydroxide/lsdir/archive/refs/tags/v0.1.6.tar.gz"
   sha256 "6fb3ac2d07236eda71c8e1c59d8ec4a58319185e36cb4f5a1c5ecf70002b202f"  # Your package hash
   license "MIT"
 
