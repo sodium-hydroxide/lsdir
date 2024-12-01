@@ -4,7 +4,7 @@ class Lsdir < Formula
   desc "Enhanced directory listing tool with content preview"
   homepage "https://github.com/sodium-hydroxide/lsdir"
   url "https://github.com/sodium-hydroxide/lsdir/archive/refs/tags/v0.1.6.tar.gz"
-  sha256 "6fb3ac2d07236eda71c8e1c59d8ec4a58319185e36cb4f5a1c5ecf70002b202f"  # Your package hash
+  sha256 "ed5c7e66a9944f5d9e3cda109f09bb34cedae8571f595d7399fcc5f7f3fdffa1"  # Your package hash
   license "MIT"
 
   resource "python-magic" do      url "https://files.pythonhosted.org/packages/da/db/0b3e28ac047452d079d375ec6798bf76a036a08182dbb39ed38116a49130/python-magic-0.4.27.tar.gz"
